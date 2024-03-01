@@ -43,6 +43,13 @@ async def process_help_command(message: Message):
         reply_markup=cancel_keyboard
     )
 
+@router.message(Command(commands=['stats']))
+async def process_help_command(message: Message):
+    await message.edit_text(
+        text='В разработке...',
+        reply_markup=cancel_keyboard,   
+    )
+
 @router.callback_query(F.data.in_(['info_desc_show']))
 async def process_info_show_button(callback: CallbackQuery):
     await callback.message.edit_text(

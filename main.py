@@ -3,8 +3,8 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
-from handlers import other_handler, user_handler
-# from keyboards.main_menu import set_main_menu
+from handlers import user_handler
+from keyboards.main_menu import set_main_menu
 from config.config import Config, load_config, db, cached_db
 
 logger = logging.getLogger(__name__)
@@ -21,8 +21,9 @@ async def main() -> None:
     bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
     dp = Dispatcher()
 
+    await set_main_menu(bot=bot)
+
     dp.include_router(user_handler.router)
-    dp.include_router(other_handler.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
