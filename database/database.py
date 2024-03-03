@@ -134,3 +134,13 @@ class Database:
          result = list(x for x in result[0])
          
          return result
+    
+    def get_link_from_favourite(self, film_name: str = None):
+        self._cur.execute('''
+            SELECT film_url
+	        FROM public.films
+	        WHERE film_name='{film_name}';
+            '''.format(film_name=film_name))
+        result=self._cur.fetchone()
+        
+        return result[0]
