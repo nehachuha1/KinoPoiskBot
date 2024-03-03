@@ -26,7 +26,7 @@ cancel_keyboard = InlineKeyboardMarkup(
 
 async def set_main_menu(bot: Bot):
     main_menu_commands = [
-        BotCommand(command='/start', description='Отправляет главное менб в диалог'),
+        BotCommand(command='/start', description='Отправить главное меню в диалог'),
         BotCommand(command='/stats', description='В разработке...')
     ]
 

@@ -7,6 +7,8 @@ from handlers import user_handler
 from keyboards.main_menu import set_main_menu
 from config.config import Config, load_config, db, cached_db
 
+from keyboards.favourite_keyboard import make_favourite_kb
+
 logger = logging.getLogger(__name__)
 
 async def main() -> None:
@@ -16,6 +18,7 @@ async def main() -> None:
     logger.info('Starting bot...')
 
     # db.add_top_250_films()
+
     config: Config = load_config('.env')
     
     bot = Bot(token=config.tg_bot.token, parse_mode='HTML')

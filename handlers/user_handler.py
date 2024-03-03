@@ -5,7 +5,7 @@ from aiogram.types import CallbackQuery
 
 from lexicon.lexicon import LEXICON_RU
 from keyboards.main_menu import main_menu_keyboard, cancel_keyboard
-from keyboards.favourite_keyboard import favourite_kb
+from keyboards.favourite_keyboard import make_favourite_kb
 from keyboards.pagination_keyboard import create_pagination_keyboard
 from config.config import db, cached_db
 
@@ -60,10 +60,11 @@ async def process_info_show_button(callback: CallbackQuery):
 
 @router.callback_query(F.data.in_(['favourite_show']))
 async def process_favourite_show_button(callback: CallbackQuery):
+    kb = make_favourite_kb(username=callback.from_user.id)
     await callback.message.edit_text(
         parse_mode='HTML',
         text=LEXICON_RU['FAVOURITE_MESSAGE'],
-        reply_markup=favourite_kb
+        reply_markup=kb
     )
 
 @router.callback_query(F.data.in_(['check_top_show']))
@@ -133,6 +134,15 @@ async def process_right_button(callback: CallbackQuery):
             reply_markup=current_keyboard
     )
 
+@router.callback_query(F.data.in_(['add_to_favourite']))
+async def process_add_to_favourite(callback: CallbackQuery):
+    current_user_data = cached_db.get_values(str(callback.from_user.id))
+    current_film = db.get_film([int(x) for x in current_user_data[0]][0])
+
+    film_data, position = *current_film[0], current_film[1]
+    db.add_to_favourite(film=film_data[4], username=callback.from_user.id)
+    await callback.answer(text='Фильм успешно добавлен в избранное!')
+
 @router.callback_query(F.data.in_(['error_alert']))
 async def process_show_alert(callback: CallbackQuery):
     await callback.answer(
@@ -141,6 +151,6 @@ async def process_show_alert(callback: CallbackQuery):
         show_alert=True
         )
 
-@router.callback_query(F.data.in_(['add_to_favourite']))
-async def process_add_to_favourite(callback: CallbackQuery):
+@router.callback_query()
+async def process_any_callback(callback: CallbackQuery):
     await callback.answer('')

@@ -105,3 +105,32 @@ class Database:
         result = self._cur.fetchall()
 
         return result
+    
+    def add_to_favourite(self, film: str, username: str = None):
+        self._cur.execute('''
+            SELECT favourite_films
+	        FROM public.favourite_films
+	        WHERE username='{username}';
+            '''.format(username=username))
+        result = self._cur.fetchone()
+        result = [x[0] for x in result]
+        result = list(x for x in result[0])
+        if film not in result:
+            result.append(film)
+        self._cur.execute('''
+        UPDATE public.favourite_films
+	    SET favourite_films=ARRAY[{films}]
+	    WHERE username='{username}';'''.format(username=username, films=result))
+        self._connection.commit()
+
+    def get_favourite(self, username: str = None):
+         self._cur.execute('''
+            SELECT favourite_films
+	        FROM public.favourite_films
+	        WHERE username='{username}';
+            '''.format(username=username))
+         result=self._cur.fetchone()
+         result = [x[0] for x in result]
+         result = list(x for x in result[0])
+         
+         return result
